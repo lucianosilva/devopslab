@@ -20,27 +20,12 @@ jobs:
           python-version: '3.7.11'
 
       - name: Install Requirements
-        run:  pip install flask flask-wtf
-              
+        run:  pip install flask flask-wtf pytest pytest-cov
+
       - name: Unit Test
-        run: python -m unittest -v test
-  
-  sonarcloud:
-    needs: Build
-    name: SonarCloud
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.7.11'
-      - name: Install tox and any other packages
-        run: pip install tox flask flask-wtf
-      - name: Run tox
-        run: tox -e py
+        run: |-
+          python3 -m pytest -v test.py --cov=./ --cov-report=term --cov-report=html --cov-report=xml
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -48,7 +33,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   Deploy:
-    needs: [Build, SonarCloud]
+    needs: Build
     runs-on: ubuntu-latest
 
     steps:
