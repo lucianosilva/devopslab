@@ -20,11 +20,11 @@ jobs:
           python-version: '3.7.11'
 
       - name: Install Requirements
-        run:  pip install flask flask-wtf pytest pytest-cov
-
+        run:  pip install flask flask-wtf
+              
       - name: Unit Test
-        run: |-
-          python3 -m pytest -v test.py --cov=./ --cov-report=term --cov-report=html --cov-report=xml
+        run: python -m unittest -v test
+                                                                                                    
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -35,12 +35,12 @@ jobs:
       - name: Login to Heroku Container registry
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          run: heroku container:login
+        run: heroku container:login
 
       - name: Docker Build Image & Push Heroku Registry
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+        run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
 
   Deploy:
     needs: Build
