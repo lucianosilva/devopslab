@@ -1,5 +1,7 @@
 # Nome do Workflow
 name: DevOpsLab Pipeline
+git:
+  depth: false  # "Shallow clone detected during the analysis"
 
 # Evento que irá acionar a pipeline
 on: 
